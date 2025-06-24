@@ -1,0 +1,325 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/CardboardBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/tools/protos/Wrench.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/pipes/protos/PipeSection.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/valves/protos/Valve.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer2/protos/Pioneer2.proto"
+
+WorldInfo {
+  info [
+    "Factory environment for ST-HPF-TO Controller testing"
+    "Pioneer 2 robot with advanced navigation capabilities"
+  ]
+  title "Factory ST-HPF-TO Environment"
+  basicTimeStep 32
+  contactProperties [
+    ContactProperties {
+      material1 "floor"
+      material2 "wheel"
+      coulombFriction [
+        0.8
+      ]
+      bounce 0.0
+      softCFM 0.001
+    }
+  ]
+}
+
+Viewpoint {
+  orientation -0.3826834323650898 0.8017837246983142 0.4558422238230814 1.57
+  position 0.0 8.0 6.0
+  follow "pioneer2"
+}
+
+TexturedBackground {
+}
+
+TexturedBackgroundLight {
+}
+
+RectangleArena {
+  translation 0 0 0
+  floorSize 10 10
+  floorTileSize 1 1
+  floorAppearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/default/worlds/textures/parquetry.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0.0
+  }
+  wallHeight 0.5
+}
+
+# Pioneer 2 robot with ST-HPF-TO controller
+Pioneer2 {
+  translation -4 0 0.1
+  rotation 0 0 1 0
+  name "pioneer2"
+  controller "st_hpf_to_controller"
+  supervisor TRUE
+  extensionSlot [
+    GPS {
+      name "gps"
+    }
+    DistanceSensor {
+      translation 0.2 0 0
+      rotation 0 0 1 0
+      name "ds_front"
+      lookupTable [
+        0 0 0
+        1 1000 0
+        2 2000 0
+      ]
+    }
+    DistanceSensor {
+      translation 0.1 0.1 0
+      rotation 0 0 1 1.57
+      name "ds_left"
+      lookupTable [
+        0 0 0
+        1 1000 0
+        2 2000 0
+      ]
+    }
+    DistanceSensor {
+      translation 0.1 -0.1 0
+      rotation 0 0 1 -1.57
+      name "ds_right"
+      lookupTable [
+        0 0 0
+        1 1000 0
+        2 2000 0
+      ]
+    }
+    Emitter {
+      name "emitter"
+      range 10
+      channel 1
+    }
+    Receiver {
+      name "receiver"
+      channel 1
+    }
+  ]
+}
+
+# Goal marker (visual reference)
+SolidBox {
+  translation 4 0 0.1
+  size 0.3 0.3 0.2
+  appearance PBRAppearance {
+    baseColor 0 1 0
+    roughness 0.3
+    metalness 0.0
+  }
+  name "goal_marker"
+}
+
+# Factory obstacles - arranged to create interesting navigation challenges
+
+# Conveyor belt simulation (static boxes)
+CardboardBox {
+  translation -2 2 0.15
+  name "box1"
+}
+
+CardboardBox {
+  translation -1 2 0.15
+  name "box2"
+}
+
+CardboardBox {
+  translation 0 2 0.15
+  name "box3"
+}
+
+CardboardBox {
+  translation 1 2 0.15
+  name "box4"
+}
+
+# Machinery obstacles
+SolidBox {
+  translation -2 -2 0.5
+  size 1.5 1 1
+  appearance PBRAppearance {
+    baseColor 0.7 0.7 0.8
+    roughness 0.8
+    metalness 0.3
+  }
+  name "machine1"
+}
+
+SolidBox {
+  translation 2 -2 0.3
+  size 1 1.5 0.6
+  appearance PBRAppearance {
+    baseColor 0.8 0.6 0.4
+    roughness 0.6
+    metalness 0.1
+  }
+  name "machine2"
+}
+
+# Pipe obstacles
+PipeSection {
+  translation 0 -3 0.2
+  rotation 0 0 1 1.57
+  name "pipe1"
+}
+
+PipeSection {
+  translation 3 1 0.2
+  rotation 0 0 1 0
+  name "pipe2"
+}
+
+# Valve obstacles
+Valve {
+  translation 1 -1 0
+  name "valve1"
+}
+
+Valve {
+  translation -1 1 0
+  name "valve2"
+}
+
+# Additional dynamic obstacles for advanced testing
+SolidBox {
+  translation 2 2 0.2
+  size 0.5 0.5 0.4
+  appearance PBRAppearance {
+    baseColor 1 0.5 0
+    roughness 0.4
+    metalness 0.0
+  }
+  name "obstacle1"
+}
+
+SolidBox {
+  translation -3 1 0.25
+  size 0.8 0.3 0.5
+  appearance PBRAppearance {
+    baseColor 0.5 0.8 1
+    roughness 0.3
+    metalness 0.2
+  }
+  name "obstacle2"
+}
+
+# Narrow passage challenge
+SolidBox {
+  translation 0.5 0.8 0.3
+  size 0.2 1.5 0.6
+  appearance PBRAppearance {
+    baseColor 0.6 0.4 0.2
+    roughness 0.7
+    metalness 0.0
+  }
+  name "wall1"
+}
+
+SolidBox {
+  translation 0.5 -0.8 0.3
+  size 0.2 1.5 0.6
+  appearance PBRAppearance {
+    baseColor 0.6 0.4 0.2
+    roughness 0.7
+    metalness 0.0
+  }
+  name "wall2"
+}
+
+# Tools scattered around
+Wrench {
+  translation -1.5 0.5 0.05
+  name "wrench1"
+}
+
+Wrench {
+  translation 2.5 -0.5 0.05
+  name "wrench2"
+}
+
+# Additional Pioneer 2 robots for fleet coordination testing (optional)
+Pioneer2 {
+  translation -3 -3 0.1
+  rotation 0 0 1 0.785
+  name "pioneer2_2"
+  controller "st_hpf_to_controller"
+  supervisor TRUE
+  extensionSlot [
+    GPS {
+      name "gps"
+    }
+    DistanceSensor {
+      translation 0.2 0 0
+      rotation 0 0 1 0
+      name "ds_front"
+      lookupTable [
+        0 0 0
+        1 1000 0
+        2 2000 0
+      ]
+    }
+    DistanceSensor {
+      translation 0.1 0.1 0
+      rotation 0 0 1 1.57
+      name "ds_left"
+      lookupTable [
+        0 0 0
+        1 1000 0
+        2 2000 0
+      ]
+    }
+    DistanceSensor {
+      translation 0.1 -0.1 0
+      rotation 0 0 1 -1.57
+      name "ds_right"
+      lookupTable [
+        0 0 0
+        1 1000 0
+        2 2000 0
+      ]
+    }
+    Emitter {
+      name "emitter"
+      range 10
+      channel 1
+    }
+    Receiver {
+      name "receiver"
+      channel 1
+    }
+  ]
+}
+
+# Lighting for better visualization
+DEF LIGHT1 SpotLight {
+  attenuation 0 0 1
+  beamWidth 0.8
+  cutOffAngle 1.2
+  direction 0 -1 0
+  intensity 2
+  location -2 4 3
+  radius 20
+}
+
+DEF LIGHT2 SpotLight {
+  attenuation 0 0 1
+  beamWidth 0.8
+  cutOffAngle 1.2
+  direction 0 -1 0
+  intensity 2
+  location 2 4 3
+  radius 20
+}
